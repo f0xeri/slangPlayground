@@ -1,0 +1,37 @@
+services:
+  slangc-image:
+    build:
+      context: slangcImage
+      dockerfile: Dockerfile
+    container_name: slangc-image
+    image: slangc-image
+  slangc-runner:
+    build:
+      context: slangcRunner
+      dockerfile: Dockerfile
+    container_name: slangc-runner
+    image: slangc-runner
+    depends_on:
+      - slangc-image
+    ports:
+      - "6002:6002"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - my-network
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    image: frontend
+    ports:
+      - "6001:6001"
+    networks:
+      - my-network
+    links:
+      - slangc-runner
+
+networks:
+  my-network:
+    driver: bridge
