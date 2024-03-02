@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -102,7 +103,7 @@ func compile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	requestBody, err := io.ReadAll(r.Body)
 	requestBody = bytes.ReplaceAll(requestBody, []byte("\r\n"), []byte("\n"))
-	if err != nil {
+	if err != nil || len(requestBody) == 0 {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		log.Println(err)
 		return
@@ -127,7 +128,7 @@ func compile(w http.ResponseWriter, r *http.Request) {
 	cmd.Stdout, cmd.Stderr = out, out
 	if err := cmd.Run(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		compileResponse.Errors = out.String()
+		compileResponse.Errors = strings.ReplaceAll(out.String(), fullFileName, "main")
 		compileResponse.Output = Output{Stdout: "", Stderr: "\n\nBuild failed\n"}
 		json.NewEncoder(w).Encode(compileResponse)
 		log.Printf("Error running compiler: %s; err: %s", out.String(), err)
@@ -139,7 +140,7 @@ func compile(w http.ResponseWriter, r *http.Request) {
 	log.Println(runResult)
 	log.Println(runErrors)
 	os.RemoveAll(fileName)
-	compileResponse.Errors = out.String()
+	compileResponse.Errors = strings.ReplaceAll(out.String(), fullFileName, "main")
 	compileResponse.Output = Output{Stdout: runResult, Stderr: runErrors}
 	json.NewEncoder(w).Encode(compileResponse)
 	if err != nil {

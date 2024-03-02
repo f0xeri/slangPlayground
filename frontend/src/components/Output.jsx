@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Box, Button, Text, useToast} from "@chakra-ui/react";
+import {Box, Button, Center, Text, useToast} from "@chakra-ui/react";
 
 const Output = ({editorRef, language}) => {
     const toast = useToast();
@@ -44,29 +44,45 @@ const Output = ({editorRef, language}) => {
 
     return (
         <Box w="50%" textAlign="left">
-            <Text mb={2} fontSize="lg">
-                Output
-            </Text>
-            <Button
-                variant="outline"
-                colorScheme="green"
-                mb={4}
-                isLoading={isLoading}
-                onClick={runCode}
-            >
-                Run Code
-            </Button>
+            <Center>
+                <Text mb={2} fontSize="lg" align="center">
+                    Output
+                </Text>
+            </Center>
+            <Center>
+                <Button
+                    variant="outline"
+                    colorScheme="green"
+                    mb={4}
+                    isLoading={isLoading}
+                    onClick={runCode}
+                >
+                    Run Code
+                </Button>
+            </Center>
             <Box
+                overflowY="auto"
                 height="75vh"
                 p={2}
                 color={isError ? "red.400" : ""}
                 border="1px solid"
                 borderRadius={4}
                 borderColor={isError ? "red.500" : "#333"}
+                css={{
+                    '&::-webkit-scrollbar': {
+                        width: '14px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        width: '6px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: '#4f4f4f',
 
+                    },
+                }}
             >
                 {output ? (
-                    <pre>
+                    <pre style={{whiteSpace: "pre-wrap"}}>
                         Compilation result:<br/><br/>
                         {output.errors}
                         <br/><br/>Execution result:<br/><br/>
@@ -74,7 +90,7 @@ const Output = ({editorRef, language}) => {
                         {output.output.stdout}
                     </pre>
                 ) : (
-                    <pre>Click "Run Code" to see the output here</pre>
+                    <pre style={{whiteSpace: "pre-wrap"}}> Click "Run Code" to see the output here</pre>
                 )}
             </Box>
         </Box>

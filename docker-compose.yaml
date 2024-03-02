@@ -26,7 +26,7 @@ services:
     container_name: frontend
     image: frontend
     ports:
-      - "6001:6001"
+      - "80:80"
     networks:
       - my-network
     links:
