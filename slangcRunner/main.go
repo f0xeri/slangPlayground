@@ -104,7 +104,7 @@ func compile(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := io.ReadAll(r.Body)
 	requestBody = bytes.ReplaceAll(requestBody, []byte("\r\n"), []byte("\n"))
 	if err != nil || len(requestBody) == 0 {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Empty request body", http.StatusBadRequest)
 		log.Println(err)
 		return
 	}
