@@ -65,7 +65,6 @@ func runInSandBox(fileName string) (string, string, error) {
 
 	var tarError bytes.Buffer
 	tarCmd.Stderr = &tarError
-
 	dockerCmd.Stdin, _ = tarCmd.StdoutPipe()
 	var dockerOutput bytes.Buffer
 	var dockerError bytes.Buffer
@@ -73,7 +72,7 @@ func runInSandBox(fileName string) (string, string, error) {
 	dockerCmd.Stderr = &dockerError
 
 	if err := tarCmd.Start(); err != nil {
-		log.Printf("Error running command: %s; err: %s; errBuffer: %s; outBuffer: %s", tarCmd, err, tarError.String())
+		log.Printf("Error running command: %s; err: %s; errBuffer: %s", tarCmd, err, tarError.String())
 		return outBuffer, "", err
 	}
 	if err := dockerCmd.Start(); err != nil {
@@ -81,7 +80,7 @@ func runInSandBox(fileName string) (string, string, error) {
 		return outBuffer, errBuffer, err
 	}
 	if err := tarCmd.Wait(); err != nil {
-		log.Printf("Error running command: %s; err: %s; errBuffer: %s; outBuffer: %s", tarCmd, err, tarError.String())
+		log.Printf("Error running command: %s; err: %s; errBuffer: %s", tarCmd, err, tarError.String())
 		return outBuffer, errBuffer, err
 	}
 	if err := dockerCmd.Wait(); err != nil {
